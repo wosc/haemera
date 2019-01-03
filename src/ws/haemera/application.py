@@ -1,4 +1,7 @@
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
+import jinja2
+import json
 import os.path
 import pkg_resources
 import pyramid.config
@@ -49,6 +52,7 @@ class Application(object):
 
     def configure_jinja(self):
         c = self.config
+
         # We don't use include('pyramid_jinja2') since that already sets up a
         # renderer for `.jinja2` files which we don't want.
         c.add_directive(
@@ -63,9 +67,16 @@ class Application(object):
         c.add_jinja2_renderer('.html')
         c.add_jinja2_search_path('ws.haemera:', '.html')
 
+        c.commit()
+        env = self.config.get_jinja2_environment('.html')
+        env.filters['json'] = tojson
+
     def configure_routes(self):
         c = self.config
+
         c.add_route('home', '/')
+
+        c.add_route('listing', '/actions/{query}')
 
         c.add_static_view('static', 'ws.haemera:static')
 
@@ -73,6 +84,17 @@ class Application(object):
 
 
 app_factory = Application()
+
+
+def tojson(value):
+    if isinstance(value, jinja2.Undefined):
+        return 'null'
+    result = json.dumps(value)
+    # <https://html.spec.whatwg.org/multipage
+    #  /scripting.html#restrictions-for-contents-of-script-elements>
+    result = result.replace('<script', r'<\script')
+    result = result.replace('</script', r'<\/script')
+    return result
 
 
 @zope.interface.implementer(ws.haemera.interfaces.ISettings)
@@ -93,6 +115,6 @@ def initialize_database(argv=sys.argv):
         db.initialize_database()
 
 
-@view_config(route_name='home', renderer='templates/layout.html')
+@view_config(route_name='home')
 def home(request):
-    return {}
+    raise HTTPFound(location=request.route_url('listing', query='todo'))
