@@ -19,10 +19,14 @@
 </head>
 <body>
 
+{# XXX I would like to use numbers, but they don't work in Chrome. #}
+{% set ACCESSKEYS = ['q', 'w', 'e', 'r', 't'] %}
+
 <ul id="nav" class="nav nav-tabs bg-primary">
   {% for query in request.registry.settings.listing_queries %}
   <li class="nav-item">
     <a class="nav-link {{'active' if request.matchdict.get('query') == query else ''}}"
+       {% if loop.index0 < ACCESSKEYS | length %}accesskey="{{ACCESSKEYS[loop.index0]}}"{% endif %}
        href="{{request.route_url('listing', query=query)}}">
       {{query | title}}</a>
   </li>
