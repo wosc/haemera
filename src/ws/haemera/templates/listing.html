@@ -81,6 +81,7 @@
 
 <script>
   haemera.ListingController.set({{actions | json | safe}});
+  haemera.ListingController.update_url = "{{request.route_url('update')}}";
 </script>
 
 {% endblock %}

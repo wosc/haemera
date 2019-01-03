@@ -7,6 +7,9 @@ haemera.ListingController = {
         'current_row': null
     },
 
+    update_url: null,
+    _deleted: [],
+
     set: function(actions) {
         this.data.actions = actions;
     },
@@ -20,6 +23,9 @@ haemera.ListingController = {
 
     remove: function() {
         if (this.data.current_row == null || ! this.data.actions) return;
+        this._deleted.push({
+            'id': this.data.actions[this.data.current_row].id,
+            'status': 'deleted'});
         this.data.actions.splice(this.data.current_row, 1);
         this.data.current_row = null;
     },
@@ -50,6 +56,26 @@ haemera.ListingController = {
         } else {
             this.data.current_row = row;
         }
+    },
+
+    persist: function() {
+        var self = this;
+        window.fetch(self.update_url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            // XXX Sending only dirty items would be more efficient, but how?
+            body: JSON.stringify(self.data.actions.concat(self._deleted))
+        }).then(function(response) {
+            if (response.ok) {
+                // XXX We may want to something more efficient here, like
+                // replacing self.data.actions with a server-side result.
+                window.location.reload();
+            } else {
+                window.alert(self.update_url + ' returned ' + response.status);
+            }
+        }).catch(function(error) {
+            throw error;
+        });
     }
 };
 var Controller = haemera.ListingController;
@@ -110,5 +136,7 @@ document.querySelector('body').addEventListener('keyup', function(event) {
         Controller.select_previous();
     } else if (event.key == 'i') {
         Controller.select_none();
+    } else if (event.key == '$') {
+        Controller.persist();
     }
 });
