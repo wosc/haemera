@@ -1,5 +1,5 @@
 from pyramid.view import view_config
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Date, DateTime, Integer, String, Text
 from sqlalchemy.sql import text as sql
 import json
 import ws.haemera.db
@@ -11,20 +11,33 @@ import zope.sqlalchemy
 class Action(ws.haemera.db.Object):
 
     subject = Column(String)
+    body = Column(Text)
+
     topic = Column(String)
     priority = Column(Integer, server_default='0')
+
+    project = Column(String)
+
+    # inactive, todo, scheduled, recurring, done
     status = Column(String, server_default='todo')
-    body = Column(Text)
+    # status=done
+    done_at = Column(DateTime)
+
+    # status=scheduled, recurring
+    timestamp = Column(Date)
+    start_time = Column(String)
+    duration = Column(String)
+    delegate = Column(String)
 
 
 @view_config(
     route_name='listing',
     renderer='templates/listing.html')
 def listing(request):
+    conf = zope.component.getUtility(ws.haemera.interfaces.ISettings)
     db = zope.component.getUtility(ws.haemera.interfaces.IDatabase).session
     rows = db.execute(sql(
-        'SELECT * FROM action ORDER BY priority DESC, topic, subject')
-    ).fetchall()
+        conf.listing_queries[request.matchdict['query']])).fetchall()
     return {'actions': [dict(x) for x in rows]}
 
 

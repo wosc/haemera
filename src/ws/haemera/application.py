@@ -1,5 +1,7 @@
+from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
+import collections
 import jinja2
 import json
 import os.path
@@ -100,7 +102,14 @@ def tojson(value):
 
 @zope.interface.implementer(ws.haemera.interfaces.ISettings)
 class Settings(dict):
-    pass
+
+    @reify
+    def listing_queries(self):
+        result = collections.OrderedDict()
+        for key, value in self.items():
+            if key.startswith('query.'):
+                result[key.replace('query.', '', 1)] = value
+        return result
 
 
 def initialize_database(argv=sys.argv):
