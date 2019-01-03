@@ -38,6 +38,7 @@
     <option value="inactive">Inactive</option>
     <option value="todo">Todo</option>
     <option value="scheduled">Scheduled</option>
+    <option value="recurring">Recurring</option>
     <option value="done">Done</option>
   </select>
 </div>
@@ -82,9 +83,13 @@
   <input type="time" id="duration" v-model="action.duration"/>
 </div>
 
-<div class="form-group">
+<div class="form-group" v-if="action.status == 'scheduled'">
   <label for="delegate">Delegated to</label>
-  <input type="text" id="delegate" v-model="action.delegate"/>
+  <input type="text" class="form-control" id="delegate" v-model="action.delegate"/>
+</div>
+<div class="form-group" v-else-if="action.status == 'recurring'">
+  <label for="rrule">Recurrence</label>
+  <input type="text" class="form-control" id="rrule" v-model="action.rrule"/>
 </div>
 </div>
 

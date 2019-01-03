@@ -13,6 +13,7 @@ setup(
         'pyramid',
         'pyramid_jinja2',
         'pyramid_tm',
+        'python-dateutil',
         'setuptools',
         'sqlalchemy',
         'transaction',
@@ -32,6 +33,7 @@ setup(
         ],
         'console_scripts': [
             'haemera-init-db=ws.haemera.application:initialize_database',
+            'haemera-recurrences=ws.haemera.ical:instantiate_recurring',
         ],
     },
 

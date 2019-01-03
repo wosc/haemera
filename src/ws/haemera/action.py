@@ -30,6 +30,11 @@ class Action(ws.haemera.db.Object):
     duration = Column(String)    # HH:MM
     delegate = Column(String)
 
+    # status=recurring
+    rrule = Column(String)
+    latest_instance = Column(Date)
+    template = Column(Integer)
+
     @classmethod
     def find_by_sql(cls, text):
         return cls.db().session.execute(sql(text)).fetchall()
