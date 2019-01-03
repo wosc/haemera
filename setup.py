@@ -29,6 +29,7 @@ setup(
             'main=ws.haemera.application:app_factory',
         ],
         'console_scripts': [
+            'haemera-init-db=ws.haemera.application:initialize_database',
         ],
     },
 

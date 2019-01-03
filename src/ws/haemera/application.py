@@ -1,10 +1,15 @@
 from pyramid.view import view_config
+import os.path
 import pkg_resources
 import pyramid.config
+import pyramid.paster
 import pyramid.registry
 import pyramid_jinja2
 import re
+import sys
+import transaction
 import ws.haemera
+import ws.haemera.db
 import ws.haemera.interfaces
 import zope.component
 import zope.interface
@@ -26,6 +31,9 @@ class Application(object):
             'ws.haemera').version
         zope.component.provideUtility(
             self.settings, ws.haemera.interfaces.ISettings)
+
+        db = ws.haemera.db.Database(self.settings['sqlalchemy.url'])
+        zope.component.provideUtility(db)
 
         registry = pyramid.registry.Registry(
             bases=(zope.component.getGlobalSiteManager(),))
@@ -70,6 +78,19 @@ app_factory = Application()
 @zope.interface.implementer(ws.haemera.interfaces.ISettings)
 class Settings(dict):
     pass
+
+
+def initialize_database(argv=sys.argv):
+    if len(argv) != 2:
+        sys.stderr.write('usage: %s <my.ini>\n' % os.path.basename(argv[0]))
+        sys.exit(1)
+    config = argv[1]
+    pyramid.paster.setup_logging(config)
+    settings = pyramid.paster.get_appsettings(config)
+    app_factory(None, **settings)
+    db = zope.component.getUtility(ws.haemera.interfaces.IDatabase)
+    with transaction.manager:
+        db.initialize_database()
 
 
 @view_config(route_name='home', renderer='templates/layout.html')
