@@ -17,18 +17,18 @@ class Action(ws.haemera.db.Object):
     topic = Column(String)
     priority = Column(Integer, server_default='0')
 
-    project = Column(String)
+    project = Column(String, index=True)
 
     # inactive, todo, scheduled, recurring, done
-    status = Column(String, server_default='todo')
+    status = Column(String, server_default='todo', index=True)
     # status=done
     done_at = Column(DateTime)
 
     # status=scheduled, recurring
-    timestamp = Column(Date)
+    timestamp = Column(Date, index=True)
     start_time = Column(String)  # HH:MM
     duration = Column(String)    # HH:MM
-    delegate = Column(String)
+    delegate = Column(String, index=True)
 
     # status=recurring
     rrule = Column(String)
