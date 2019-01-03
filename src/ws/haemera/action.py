@@ -2,6 +2,7 @@ from pyramid.view import view_config
 from sqlalchemy import Column, Date, DateTime, Integer, String, Text
 from sqlalchemy.sql import text as sql
 import json
+import pendulum
 import ws.haemera.db
 import ws.haemera.interfaces
 import zope.component
@@ -54,6 +55,8 @@ def update(request):
         elif not action.get('id'):
             db.execute(Action.__table__.insert().values(**action))
         else:
+            if action['status'] == 'done':
+                action['done_at'] = pendulum.now('UTC')
             db.execute(Action.__table__.update().where(
                 Action.id == action['id']).values(**action))
     zope.sqlalchemy.mark_changed(db)
