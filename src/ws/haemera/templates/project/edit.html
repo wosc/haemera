@@ -1,0 +1,47 @@
+{% set page_title = "Edit Project" %}
+{% extends "templates/layout.html" %}
+
+{% block body %}
+<div class="container-fluid">
+
+<h3>Edit Project</h3>
+
+<form method="POST">
+
+<div class="form-group">
+  <label for="subject">Subject</label>
+  <input type="text" class="form-control" id="subject" name="subject" value="{{context.subject}}"/>
+</div>
+
+<div class="form-group">
+  <label for="topic">Topic</label>
+  <select class="form-control" id="topic" name="topic">
+  {% for topic in request.registry.settings.topics %}
+    <option
+      value="{{topic}}"
+      class="topic-{{topic}}"
+      {{'selected' if context.topic == topic else ''}}>
+      {{topic | title}}
+    </option>
+  {% endfor %}
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="body">Body</label>
+  <textarea class="form-control" id="body" name="body" rows="10">
+    {{context.body or ''}}
+  </textarea>
+</div>
+
+<div class="form-group">
+<button type="submit" name="store" class="btn btn-raised btn-primary">Submit</button>
+
+{% if context.id %}
+<button type="submit" name="delete" class="btn btn-raised btn-danger">Delete</button>
+{% endif %}
+</div>
+
+</form>
+</div>
+{% endblock %}

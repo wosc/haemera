@@ -60,6 +60,19 @@
   {% endfor %}
   </select>
 </div>
+
+<div class="form-group">
+  <label for="project">Project</label>
+  <select class="form-control" id="project" v-model="action.project">
+  <option></option>
+  {% for project in projects %}
+  <option value="{{project.id}}" class="topic-{{project.topic}}">
+    {{project.subject | safe}}
+  </option>
+  {% endfor %}
+  </select>
+</div>
+
 </div>
 
 <div class="form-inline" v-if="action.status == 'scheduled' || action.status == 'recurring'">

@@ -82,6 +82,12 @@ class Application(object):
         c.add_route('ical', '/ical/{query}')
         c.add_route('update', '/actions/update')
 
+        c.add_route('project_actions', '/project/list/{project}')
+        c.add_route('project_new', '/project/new')
+        c.add_route('project_edit', '/project/{project}/edit')
+        c.add_route('project_delete', '/project/{project}/delete')
+        c.add_route('project', '/project/{project}')
+
         c.add_route('topic_css', '/static/css/topic.css')
 
         c.add_static_view('static', 'ws.haemera:static')

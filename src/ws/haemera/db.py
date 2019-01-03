@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.sql import text as sql
 import sqlalchemy
 import sqlalchemy.exc
 import sqlalchemy.ext.declarative
@@ -59,6 +60,14 @@ class ObjectBase(object):
     @classmethod
     def query(cls):
         return cls.db().query(cls)
+
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.db().query(cls).get(id)
+
+    @classmethod
+    def find_by_sql(cls, text, **params):
+        return cls.db().session.execute(sql(text), params=params).fetchall()
 
 
 DeclarativeBase = sqlalchemy.ext.declarative.declarative_base(

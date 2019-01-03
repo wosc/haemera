@@ -1,6 +1,6 @@
 from pyramid.view import view_config
 from sqlalchemy import Column, Date, DateTime, Integer, String, Text
-from sqlalchemy.sql import text as sql
+from ws.haemera.project import Project
 import json
 import pendulum
 import ws.haemera.db
@@ -35,10 +35,6 @@ class Action(ws.haemera.db.Object):
     latest_instance = Column(Date)
     template = Column(Integer)
 
-    @classmethod
-    def find_by_sql(cls, text):
-        return cls.db().session.execute(sql(text)).fetchall()
-
 
 @view_config(
     route_name='listing',
@@ -46,7 +42,24 @@ class Action(ws.haemera.db.Object):
 def listing(request):
     conf = zope.component.getUtility(ws.haemera.interfaces.ISettings)
     rows = Action.find_by_sql(conf.listing_queries[request.matchdict['query']])
-    return {'actions': [dict(x) for x in rows]}
+    return {
+        'actions': [dict(x) for x in rows],
+        'projects': Project.all(),
+    }
+
+
+@view_config(
+    route_name='project_actions',
+    renderer='templates/listing.html')
+def project_actions(request):
+    rows = Action.find_by_sql(
+        "SELECT * FROM ACTION WHERE project=:project"
+        " AND status <> 'done' AND status <> 'recurring'",
+        project=request.matchdict['project'])
+    return {
+        'actions': [dict(x) for x in rows],
+        'projects': Project.all(),
+    }
 
 
 @view_config(
