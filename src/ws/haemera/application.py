@@ -82,6 +82,8 @@ class Application(object):
         c.add_route('ical', '/ical/{query}')
         c.add_route('update', '/actions/update')
 
+        c.add_route('topic_css', '/static/css/topic.css')
+
         c.add_static_view('static', 'ws.haemera:static')
 
         c.scan(package=ws.haemera, ignore=self.DONT_SCAN)
@@ -112,6 +114,14 @@ class Settings(dict):
                 result[key.replace('query.', '', 1)] = value
         return result
 
+    @reify
+    def topics(self):
+        result = collections.OrderedDict()
+        for key, value in self.items():
+            if key.startswith('topic.'):
+                result[key.replace('topic.', '', 1)] = value
+        return result
+
 
 def initialize_database(argv=sys.argv):
     if len(argv) != 2:
@@ -129,3 +139,13 @@ def initialize_database(argv=sys.argv):
 @view_config(route_name='home')
 def home(request):
     raise HTTPFound(location=request.route_url('listing', query='todo'))
+
+
+@view_config(
+    route_name='topic_css',
+    renderer='string')
+def topic_css(request):
+    conf = zope.component.getUtility(ws.haemera.interfaces.ISettings)
+    request.response.content_type = 'text/css'
+    return '\n'.join('.topic-%s { color: #%s; }' % (key, value)
+                     for key, value in conf.topics.items())

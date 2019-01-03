@@ -55,18 +55,9 @@
 <div class="form-group">
   <label for="topic">Topic</label>
   <select class="form-control" id="topic" v-model="action.topic">
-    <option value="none" class="topic-none">None</option>
-    <option value="computer" class="topic-computer">Computer</option>
-    <option value="datenschutz" class="topic-datenschutz">Datenschutz</option>
-    <option value="freunde" class="topic-freunde">Freunde</option>
-    <option value="jobsuche" class="topic-jobsuche">Jobsuche</option>
-    <option value="musik" class="topic-musik">Musik</option>
-    <option value="oss" class="topic-oss">OSS</option>
-    <option value="swe" class="topic-swe">SWE</option>
-    <option value="team" class="topic-team">Team</option>
-    <option value="tools" class="topic-tools">Tools</option>
-    <option value="wohnung" class="topic-wohnung">Wohnung</option>
-    <option value="work" class="topic-work">Work</option>
+  {% for topic in request.registry.settings.topics %}
+    <option value="{{topic}}" class="topic-{{topic}}">{{topic | title}}</option>
+  {% endfor %}
   </select>
 </div>
 </div>
