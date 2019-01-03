@@ -30,15 +30,17 @@ class Action(ws.haemera.db.Object):
     duration = Column(String)    # HH:MM
     delegate = Column(String)
 
+    @classmethod
+    def find_by_sql(cls, text):
+        return cls.db().session.execute(sql(text)).fetchall()
+
 
 @view_config(
     route_name='listing',
     renderer='templates/listing.html')
 def listing(request):
     conf = zope.component.getUtility(ws.haemera.interfaces.ISettings)
-    db = zope.component.getUtility(ws.haemera.interfaces.IDatabase).session
-    rows = db.execute(sql(
-        conf.listing_queries[request.matchdict['query']])).fetchall()
+    rows = Action.find_by_sql(conf.listing_queries[request.matchdict['query']])
     return {'actions': [dict(x) for x in rows]}
 
 

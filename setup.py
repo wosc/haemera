@@ -16,6 +16,7 @@ setup(
         'setuptools',
         'sqlalchemy',
         'transaction',
+        'vobject',
         'zope.component',
         'zope.interface',
         'zope.sqlalchemy',
