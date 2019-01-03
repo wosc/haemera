@@ -26,8 +26,8 @@ class Action(ws.haemera.db.Object):
 
     # status=scheduled, recurring
     timestamp = Column(Date)
-    start_time = Column(String)
-    duration = Column(String)
+    start_time = Column(String)  # HH:MM
+    duration = Column(String)    # HH:MM
     delegate = Column(String)
 
 
@@ -49,6 +49,14 @@ def listing(request):
 def update(request):
     db = zope.component.getUtility(ws.haemera.interfaces.IDatabase).session
     for action in json.loads(request.body):
+        # XXX Use a proper schema?
+        if action.get('timestamp'):
+            action['timestamp'] = pendulum.parse(action['timestamp'])
+        for key, value in action.items():
+            # XXX I think this is actually a vue shortcoming
+            if value == '':
+                action[key] = None
+
         if action.get('status') == 'deleted':
             db.execute(Action.__table__.delete().where(
                 Action.id == action['id']))

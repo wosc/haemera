@@ -68,7 +68,24 @@
     <option value="work" class="topic-work">Work</option>
   </select>
 </div>
+</div>
 
+<div class="form-inline" v-if="action.status == 'scheduled' || action.status == 'recurring'">
+<div class="form-group">
+  <label for="timestamp">Date</label>
+  <input type="date" id="timestamp" v-model="action.timestamp"/>
+</div>
+<div class="form-group">
+  <input type="time" id="start_time" v-model="action.start_time"/>
+</div>
+<div class="form-group">
+  <input type="time" id="duration" v-model="action.duration"/>
+</div>
+
+<div class="form-group">
+  <label for="delegate">Delegated to</label>
+  <input type="text" id="delegate" v-model="action.delegate"/>
+</div>
 </div>
 
 <div class="form-group" style="margin-top: 1em"><textarea class="form-control" id="body" rows="10" v-model="action.body">
