@@ -2,7 +2,6 @@ from sqlalchemy import Column, Integer
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.sql import text as sql
 import sqlalchemy
-import sqlalchemy.exc
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 import transaction
@@ -27,7 +26,7 @@ class Database(object):
         try:
             with transaction.manager:
                 Action.query().all()
-        except sqlalchemy.exc.OperationalError:
+        except Exception:
             pass
         else:
             raise ValueError(
