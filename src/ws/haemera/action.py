@@ -71,7 +71,7 @@ def update(request):
     for action in json.loads(request.body):
         # XXX Use a proper schema?
         if action.get('timestamp'):
-            action['timestamp'] = pendulum.parse(action['timestamp'])
+            action['timestamp'] = pendulum.parse(action['timestamp']).date()
         for key, value in action.items():
             # XXX I think this is actually a vue shortcoming
             if value == '':
