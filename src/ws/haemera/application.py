@@ -78,7 +78,7 @@ class Application(object):
 
         c.add_route('home', '/')
 
-        c.add_route('listing', '/list/{query}')
+        c.add_route('action_list', '/list/{query}')
         c.add_route('ical', '/ical/{query}')
         c.add_route('update', '/actions/update')
 

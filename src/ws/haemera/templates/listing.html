@@ -1,8 +1,3 @@
-{% set page_title = request.matchdict['query'] | title %}
-{% extends "layout.html" %}
-
-{% block body %}
-
 <div id="listing"></div>
 <div id="detail"></div>
 
@@ -109,5 +104,3 @@
   haemera.ListingController.set({{actions | json | safe}});
   haemera.ListingController.update_url = "{{request.route_url('update')}}";
 </script>
-
-{% endblock %}

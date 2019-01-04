@@ -2,6 +2,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 from sqlalchemy import Column, DateTime, String, Text
 import pendulum
+import ws.haemera.action
 import ws.haemera.db
 import zope.component
 import zope.sqlalchemy
@@ -49,10 +50,12 @@ def show(request):
             'SELECT * FROM project WHERE subject like :p ' + done +
             ' ORDER BY subject',
             p='%s|%%' % project['subject'])
-    return {
+    result = {
         'project': project,
         'children': children,
     }
+    result.update(ws.haemera.action.project_actions(request))
+    return result
 
 
 @view_config(

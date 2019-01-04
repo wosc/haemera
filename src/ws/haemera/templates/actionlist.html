@@ -1,0 +1,6 @@
+{% set page_title = request.matchdict['query'] | title %}
+{% extends "layout.html" %}
+
+{% block body %}
+{% include "listing.html" %}
+{% endblock %}

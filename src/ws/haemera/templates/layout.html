@@ -28,12 +28,12 @@
   <li class="nav-item">
     <a class="nav-link {{'active' if request.matchdict.get('query') == query else ''}}"
        {% if loop.index0 < ACCESSKEYS | length %}accesskey="{{ACCESSKEYS[loop.index0]}}"{% endif %}
-       href="{{request.route_url('listing', query=query)}}">
+       href="{{request.route_url('action_list', query=query)}}">
       {{query | title}}</a>
   </li>
   {% endfor %}
   <li class="nav-item {{'active' if request.matched_route.name == 'project' else ''}}"><a class="nav-link" href="{{request.route_url('project', project='root')}}">Projects</a></li>
-  {% if request.matched_route.name in ['listing', 'project_actions'] %}
+  {% if request.matched_route.name in ['action_list', 'project_actions', 'project'] %}
   <li class="nav-item"><a class="nav-link" href="#" onclick="haemera.ListingController.persist(); return false;">Save</a></li>
   {% endif %}
 </ul>

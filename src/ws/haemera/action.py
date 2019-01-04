@@ -37,9 +37,9 @@ class Action(ws.haemera.db.Object):
 
 
 @view_config(
-    route_name='listing',
-    renderer='templates/listing.html')
-def listing(request):
+    route_name='action_list',
+    renderer='templates/actionlist.html')
+def list(request):
     conf = zope.component.getUtility(ws.haemera.interfaces.ISettings)
     rows = Action.find_by_sql(conf.listing_queries[request.matchdict['query']])
     return {
@@ -50,7 +50,7 @@ def listing(request):
 
 @view_config(
     route_name='project_actions',
-    renderer='templates/listing.html')
+    renderer='templates/actionlist.html')
 def project_actions(request):
     rows = Action.find_by_sql(
         "SELECT * FROM ACTION WHERE project=:project"

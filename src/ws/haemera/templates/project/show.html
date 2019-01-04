@@ -41,14 +41,10 @@
 </pre>
 {% endif %}
 
-<div style="margin-top: 1em">
 {% if project.id != 'root' %}
-<a href="{{request.route_url('project_actions', project=project.id)}}"
-   class="btn btn-raised btn-secondary">
-  Actions
-</a>
+{% if actions %}<h4>Actions</h4>{% endif %}
+{% include "templates/listing.html" %}
 {% endif %}
-</div>
 
 </div>
 
