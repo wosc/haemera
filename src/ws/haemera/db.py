@@ -14,12 +14,13 @@ import zope.sqlalchemy
 @zope.interface.implementer(ws.haemera.interfaces.IDatabase)
 class Database(object):
 
-    def __init__(self, dsn):
+    def __init__(self, dsn, testing=False):
         self.engine = sqlalchemy.create_engine(dsn)
         self.session_factory = sqlalchemy.orm.scoped_session(
             sqlalchemy.orm.sessionmaker(
                 bind=self.engine,
-                extension=zope.sqlalchemy.ZopeTransactionExtension()))
+                extension=zope.sqlalchemy.ZopeTransactionExtension(
+                    keep_session=testing)))
 
     def initialize_database(self):
         from .action import Action
@@ -52,6 +53,14 @@ class ObjectBase(object):
     @declared_attr
     def __tablename__(cls):
         return cls.__name__.lower()
+
+    def __iter__(self):
+        from datetime import date, datetime
+        for c in self.__table__.columns:
+            value = getattr(self, c.name)
+            if isinstance(value, (date, datetime)):
+                value = str(value)
+            yield(c.name, value)
 
     @staticmethod
     def db():

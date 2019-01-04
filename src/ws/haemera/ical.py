@@ -50,39 +50,41 @@ def instantiate_recurring(argv=sys.argv):
     pyramid.paster.setup_logging(config)
     settings = pyramid.paster.get_appsettings(config)
     ws.haemera.application.app_factory(None, **settings)
-    wanted = int(settings.get('create_recurrences', 2))
-    db = zope.component.getUtility(ws.haemera.interfaces.IDatabase).session
+    for template in Action.find_by_sql(
+            'SELECT * FROM ACTION WHERE status = "recurring"'):
+        with transaction.manager:
+            _instantiate_recurring(template)
 
+
+def _instantiate_recurring(template):
+    db = zope.component.getUtility(ws.haemera.interfaces.IDatabase).session
     today = pendulum.today()
 
-    for row in Action.find_by_sql(
-            'SELECT * FROM ACTION WHERE status = "recurring"'):
-        latest = row['latest_instance']
-        if not latest:
-            start = pendulum.parse(row['timestamp'])
-            skip = 0
-        else:
-            latest = pendulum.parse(row['latest_instance'])
-            start = latest
-            # rrule generates the first occurence on `dtstart`.
-            skip = 1
-            if latest > today:
-                continue
+    latest = template['latest_instance']
+    if not latest:
+        start = pendulum.parse(template['timestamp'])
+        skip = 0
+    else:
+        latest = pendulum.parse(template['latest_instance'])
+        start = latest
+        # rrule generates the first occurence on `dtstart`.
+        skip = 1
+        if latest > today:
+            return
 
-        rule = dateutil.rrule.rrulestr(row['rrule'], dtstart=start)
-        rule = rule.replace(count=wanted + skip)
-        generated = list(rule)
+    rule = dateutil.rrule.rrulestr(template['rrule'], dtstart=start)
+    rule = rule.replace(count=1 + skip)
+    generated = list(rule)
 
-        with transaction.manager:
-            for date in generated[skip:]:
-                action = dict(row)
-                del action['rrule']
-                action['template'] = action.pop('id')
-                action['status'] = 'scheduled'
-                action['timestamp'] = date
+    for date in generated[skip:]:
+        action = dict(template)
+        del action['rrule']
+        del action['latest_instance']
+        action['template'] = action.pop('id')
+        action['status'] = 'scheduled'
+        action['timestamp'] = date
 
-                db.execute(Action.__table__.insert().values(**action))
-            db.execute(
-                Action.__table__.update().where(Action.id == row['id']).values(
-                    latest_instance=date))
-            zope.sqlalchemy.mark_changed(db)
+        db.execute(Action.__table__.insert().values(**action))
+    db.execute(Action.__table__.update().where(
+        Action.id == template['id']).values(latest_instance=date))
+    zope.sqlalchemy.mark_changed(db)
