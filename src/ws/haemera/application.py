@@ -16,6 +16,7 @@ import transaction
 import ws.haemera
 import ws.haemera.db
 import ws.haemera.interfaces
+import ws.haemera.serializer  # activate monkeypatches
 import zope.component
 import zope.interface
 

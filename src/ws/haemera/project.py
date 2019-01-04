@@ -22,9 +22,7 @@ class Project(ws.haemera.db.Object):
     @classmethod
     def all(cls):
         result = []
-        for project in cls.find_by_sql(
-                "SELECT id, subject, topic FROM project WHERE status = 'todo'"
-                " ORDER BY subject"):
+        for project in cls.find_by_sql("status = 'todo' ORDER BY subject"):
             project = dict(project)
             parts = project['subject'].split('|')
             prefix = '&raquo;  ' * (len(parts) - 1)
@@ -42,14 +40,11 @@ def show(request):
     if selected == 'root':
         project = {'subject': 'root', 'topic': 'none', 'id': 'root'}
         children = Project.find_by_sql(
-            "SELECT * FROM project WHERE subject not like '%|%'" + done +
-            " ORDER BY subject")
+            "subject not like '%|%'" + done + " ORDER BY subject")
     else:
-        project = Project.find_by_sql(
-            'SELECT * FROM project WHERE id=:id', id=selected)[0]
+        project = Project.find_by_sql('id=:id', id=selected)[0]
         children = Project.find_by_sql(
-            'SELECT * FROM project WHERE subject like :p ' + done +
-            ' ORDER BY subject',
+            'subject like :p ' + done + ' ORDER BY subject',
             p='%s|%%' % project['subject'])
     result = {
         'project': project,

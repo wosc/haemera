@@ -34,7 +34,8 @@ def to_ics(event, action):
     event.add('uid').value = 'id-%s' % action['id']
     event.add('summary').value = action['subject']
     date = pendulum.parse(
-        action['timestamp'] + ' ' + action['start_time'], tz='Europe/Berlin')
+        str(action['timestamp']) + ' ' + action['start_time'],
+        tz='Europe/Berlin')
     duration = pendulum.parse(action['duration'])
     event.add('dtstart').value = date
     event.add('dtend').value = date.add(
@@ -50,8 +51,7 @@ def instantiate_recurring(argv=sys.argv):
     pyramid.paster.setup_logging(config)
     settings = pyramid.paster.get_appsettings(config)
     ws.haemera.application.app_factory(None, **settings)
-    for template in Action.find_by_sql(
-            'SELECT * FROM ACTION WHERE status = "recurring"'):
+    for template in Action.find_by_sql('status = "recurring"'):
         with transaction.manager:
             _instantiate_recurring(template)
 

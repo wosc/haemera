@@ -76,7 +76,9 @@ class ObjectBase(object):
 
     @classmethod
     def find_by_sql(cls, text, **params):
-        return cls.db().session.execute(sql(text), params=params).fetchall()
+        return cls.db().session.execute(
+            cls.__table__.select().where(sql(text)),
+            params=params).fetchall()
 
 
 DeclarativeBase = sqlalchemy.ext.declarative.declarative_base(
