@@ -1,6 +1,7 @@
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
-from sqlalchemy import Column, String, Text
+from sqlalchemy import Column, DateTime, String, Text
+import pendulum
 import ws.haemera.db
 import zope.component
 import zope.sqlalchemy
@@ -11,12 +12,17 @@ class Project(ws.haemera.db.Object):
     subject = Column(String, index=True)
     body = Column(Text)
     topic = Column(String)
+    # todo, done
+    status = Column(String, server_default='todo', index=True)
+    # status=done
+    done_at = Column(DateTime)
 
     @classmethod
     def all(cls):
         result = []
         for project in cls.find_by_sql(
-                'SELECT id, subject, topic FROM project ORDER BY subject'):
+                "SELECT id, subject, topic FROM project WHERE status = 'todo'"
+                " ORDER BY subject"):
             project = dict(project)
             parts = project['subject'].split('|')
             prefix = '&raquo;  ' * (len(parts) - 1)
@@ -30,16 +36,18 @@ class Project(ws.haemera.db.Object):
     renderer='templates/project/show.html')
 def show(request):
     selected = request.matchdict['project']
+    done = " AND status = 'todo'" if not request.params.get('done') else ''
     if selected == 'root':
-        project = {'subject': 'root', 'topic': 'none'}
+        project = {'subject': 'root', 'topic': 'none', 'id': 'root'}
         children = Project.find_by_sql(
-            "SELECT * FROM project WHERE subject not like '%|%'"
+            "SELECT * FROM project WHERE subject not like '%|%'" + done +
             " ORDER BY subject")
     else:
         project = Project.find_by_sql(
             'SELECT * FROM project WHERE id=:id', id=selected)[0]
         children = Project.find_by_sql(
-            'SELECT * FROM project WHERE subject like :p ORDER BY subject',
+            'SELECT * FROM project WHERE subject like :p ' + done +
+            ' ORDER BY subject',
             p='%s|%%' % project['subject'])
     return {
         'project': project,
@@ -80,8 +88,11 @@ def store(request):
         'subject': request.POST['subject'],
         'body': request.POST['body'].strip(),
         'topic': request.POST['topic'],
+        'status': request.POST['status'],
     }
     if id:
+        if data['status'] == 'done':
+            data['done_at'] = pendulum.now('UTC')
         db.execute(Project.__table__.update().where(
             Project.id == id).values(**data))
     else:
