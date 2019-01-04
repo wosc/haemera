@@ -144,7 +144,7 @@ def initialize_database(argv=sys.argv):
 
 @view_config(route_name='home')
 def home(request):
-    raise HTTPFound(location=request.route_url('listing', query='todo'))
+    raise HTTPFound(location=request.route_url('action_list', query='todo'))
 
 
 @view_config(
