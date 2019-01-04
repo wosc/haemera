@@ -105,7 +105,7 @@ def convert_project(project):
             # The only frequency where the start date really matters is
             # "every x days", and I'm not very fussed about that one either.
             # So we just pretend all of these just now started afresh.
-            data['timestamp'] = pendulum.today().subtract(days=1)
+            data['timestamp'] = pendulum.today().subtract(days=1).date()
             data['start_time'] = '%02d:%02d' % (
                 rec.scheduleHours, rec.scheduleMins)
             data['duration'] = '%02d:%02d' % (
