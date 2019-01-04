@@ -51,28 +51,28 @@ def instantiate_recurring(argv=sys.argv):
     pyramid.paster.setup_logging(config)
     settings = pyramid.paster.get_appsettings(config)
     ws.haemera.application.app_factory(None, **settings)
-    for template in Action.find_by_sql('status = "recurring"'):
+    for template in Action.query().filter_by(status='recurring'):
         with transaction.manager:
             _instantiate_recurring(template)
 
 
 def _instantiate_recurring(template):
     db = zope.component.getUtility(ws.haemera.interfaces.IDatabase).session
-    today = pendulum.today()
+    today = pendulum.today().date()
 
-    latest = template['latest_instance']
+    latest = template.latest_instance
     if not latest:
-        start = pendulum.parse(template['timestamp'])
+        start = template.timestamp
         skip = 0
     else:
-        latest = pendulum.parse(template['latest_instance'])
+        latest = template.latest_instance
         start = latest
         # rrule generates the first occurence on `dtstart`.
         skip = 1
         if latest > today:
             return
 
-    rule = dateutil.rrule.rrulestr(template['rrule'], dtstart=start)
+    rule = dateutil.rrule.rrulestr(template.rrule, dtstart=start)
     rule = rule.replace(count=1 + skip)
     generated = list(rule)
 
@@ -85,6 +85,7 @@ def _instantiate_recurring(template):
         action['timestamp'] = date
 
         db.execute(Action.__table__.insert().values(**action))
-    db.execute(Action.__table__.update().where(
-        Action.id == template['id']).values(latest_instance=date))
+
+    template.latest_instance = date
+    db.add(template)  # XXX why?
     zope.sqlalchemy.mark_changed(db)
