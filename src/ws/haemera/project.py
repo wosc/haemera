@@ -10,11 +10,11 @@ import zope.sqlalchemy
 
 class Project(ws.haemera.db.Object):
 
-    subject = Column(String, index=True)
+    subject = Column(String(255), index=True)
     body = Column(Text)
-    topic = Column(String)
+    topic = Column(String(20))
     # todo, done
-    status = Column(String, server_default='todo', index=True)
+    status = Column(String(20), server_default='todo', index=True)
     # status=done
     done_at = Column(DateTime)
 

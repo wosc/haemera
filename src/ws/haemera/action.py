@@ -11,27 +11,27 @@ import zope.sqlalchemy
 
 class Action(ws.haemera.db.Object):
 
-    subject = Column(String)
+    subject = Column(String(255))
     body = Column(Text)
 
-    topic = Column(String)
+    topic = Column(String(20))
     priority = Column(Integer, server_default='0')
 
-    project = Column(String, index=True)
+    project = Column(String(255), index=True)
 
     # inactive, todo, scheduled, recurring, done
-    status = Column(String, server_default='todo', index=True)
+    status = Column(String(20), server_default='todo', index=True)
     # status=done
     done_at = Column(DateTime)
 
     # status=scheduled, recurring
     timestamp = Column(Date, index=True)
-    start_time = Column(String)  # HH:MM
-    duration = Column(String)    # HH:MM
-    delegate = Column(String, index=True)
+    start_time = Column(String(5))  # HH:MM
+    duration = Column(String(5))    # HH:MM
+    delegate = Column(String(255), index=True)
 
     # status=recurring
-    rrule = Column(String)
+    rrule = Column(String(255))
     latest_instance = Column(Date)
     template = Column(Integer)
 
