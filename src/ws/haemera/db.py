@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.sql import text as sql
+import pendulum
 import sqlalchemy
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
@@ -87,3 +88,28 @@ class Object(DeclarativeBase):
     __abstract__ = True
 
     id = Column(Integer, primary_key=True)
+
+
+class DateTime(sqlalchemy.types.TypeDecorator):
+    # Adapted from <https://github.com/mozilla/build-relengapi/
+    #   blob/master/relengapi/lib/db.py>
+
+    impl = sqlalchemy.types.DateTime
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return None
+        if not isinstance(value, pendulum.DateTime) or value.tzinfo is None:
+            raise ValueError('datetime with timezone required, got %s' % value)
+        value = value.in_tz('UTC')
+        # MySQL seems to store datetimes without any timezone information.
+        # Passing it a tz-aware datetime causes an error (1292, "Incorrect
+        # datetime value"), so we make it naive.
+        if dialect.name == 'mysql':
+            value = value.replace(tzinfo=None)
+        return value
+
+    def process_result_value(self, value, dialect):
+        # We expect UTC dates back, so populate with tzinfo
+        if value is not None:
+            return value.replace(tzinfo=pendulum.timezone('UTC'))

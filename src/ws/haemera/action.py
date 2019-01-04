@@ -1,5 +1,6 @@
 from pyramid.view import view_config
-from sqlalchemy import Column, Date, DateTime, Integer, String, Text
+from sqlalchemy import Column, Date, Integer, String, Text
+from ws.haemera.db import DateTime
 from ws.haemera.project import Project
 import json
 import pendulum

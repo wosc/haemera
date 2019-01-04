@@ -1,6 +1,7 @@
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
-from sqlalchemy import Column, DateTime, String, Text
+from sqlalchemy import Column, String, Text
+from ws.haemera.db import DateTime
 import pendulum
 import ws.haemera.action
 import ws.haemera.db
