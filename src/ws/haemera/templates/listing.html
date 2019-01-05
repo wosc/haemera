@@ -1,3 +1,17 @@
+{% if request.matchdict.get('query') == 'done' %}
+<div id="search" class="container-fluid">
+<form>
+<div class="form-inline">
+<div class="form-group">
+  <input type="text" class="form-control" id="q" name="q"
+         placeholder="Search" value="{{request.params.get('q', '')}}"/>
+  <button type="submit" class="btn btn-secondary"><i class="material-icons">search</i></button>
+</div>
+</div>
+</form>
+</div>
+{% endif %}
+
 <div id="listing"></div>
 <div id="detail"></div>
 

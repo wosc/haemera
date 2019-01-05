@@ -42,7 +42,12 @@ class Action(ws.haemera.db.Object):
     renderer='templates/actionlist.html')
 def list(request):
     conf = zope.component.getUtility(ws.haemera.interfaces.ISettings)
-    rows = Action.find_by_sql(conf.listing_queries[request.matchdict['query']])
+    query = conf.listing_queries[request.matchdict['query']]
+    params = {}
+    if 'q' in request.params:
+        query = "subject like :q OR body like :q"
+        params = {'q': '%' + request.params['q'] + '%'}
+    rows = Action.find_by_sql(query, **params)
 
     # XXX Using the name of the query is a kludge.
     if request.matchdict.get('query') in ['waiting', 'scheduled']:
