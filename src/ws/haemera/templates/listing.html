@@ -25,7 +25,7 @@
 </script>
 
 <script id="template-detail" type="x-template">
-<div id="detail" class="container-fluid fixed-bottom" v-if="action">
+<div id="detail" :class="'container-fluid' + (window.innerWidth >= 576 ? ' fixed-bottom' : '')" v-if="action">
 <div class="form-group">
   <input type="text" class="form-control" id="subject" v-model="action.subject" placeholder="Subject"/>
 </div>
