@@ -84,7 +84,8 @@ def convert_project(project):
             'project': project_id,
         }
 
-        if 'context[6]' in action.context.get('reference', 'none'):
+        if (not project_id and
+                'context[6]' in action.context.get('reference', 'none')):
             data['project'] = 1  # work
 
         if action.find('priority') is not None:
