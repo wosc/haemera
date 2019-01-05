@@ -44,7 +44,7 @@ def list(request):
     conf = zope.component.getUtility(ws.haemera.interfaces.ISettings)
     rows = Action.find_by_sql(conf.listing_queries[request.matchdict['query']])
     return {
-        'actions': [dict(x) for x in rows],
+        'actions': rows,
         'projects': Project.all(),
     }
 
@@ -57,7 +57,7 @@ def project_actions(request):
         "project=:project AND status <> 'recurring' ORDER BY status, id",
         project=request.matchdict['project'])
     return {
-        'actions': [dict(x) for x in rows],
+        'actions': rows,
         'projects': Project.all(),
     }
 
