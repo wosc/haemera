@@ -89,6 +89,7 @@ def project_actions(request):
 def update(request):
     db = zope.component.getUtility(ws.haemera.interfaces.IDatabase).session
     for action in json.loads(request.body):
+        action.pop('display_timestamp', None)
         # XXX Use a proper schema?
         if action.get('timestamp'):
             action['timestamp'] = pendulum.parse(action['timestamp']).date()
