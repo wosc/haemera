@@ -43,6 +43,19 @@ class Action(ws.haemera.db.Object):
 def list(request):
     conf = zope.component.getUtility(ws.haemera.interfaces.ISettings)
     rows = Action.find_by_sql(conf.listing_queries[request.matchdict['query']])
+
+    # XXX Using the name of the query is a kludge.
+    if request.matchdict.get('query') in ['waiting', 'scheduled']:
+        result = []
+        for row in rows:
+            row = dict(row)
+            display_timestamp = row['timestamp'].strftime('%a, %d.%m.%Y')
+            if row['start_time']:
+                display_timestamp += ' ' + row['start_time']
+            row['display_timestamp'] = display_timestamp
+            result.append(row)
+        rows = result
+
     return {
         'actions': rows,
         'projects': Project.all(),

@@ -18,6 +18,7 @@
     </td>
     <td v-else></td>
     <td>{{'{{'}}action.subject{{'}}'}}</td>
+    <td v-if="action.display_timestamp">{{'{{'}}action.display_timestamp{{'}}'}}</td>
   </tr>
 </table>
 </div>
