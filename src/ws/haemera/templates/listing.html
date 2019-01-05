@@ -5,7 +5,10 @@
 <div id="listing" class="container-fluid">
 <table class="listing">
   <tr v-for="(action, i) in context.actions"
-      :class="('topic-' + action.topic) + (i == context.current_row ? ' table-active' : '')"
+      v-if="action.status != 'done' || context.show_done"
+      :class="('topic-' + action.topic) + ' ' +
+              ('status-' + action.status) + ' ' +
+              (i == context.current_row ? 'table-active' : '')"
       v-on:click="select_row">
     <td v-if="action.priority == 100">
       <i class="material-icons">assignment_late</i>

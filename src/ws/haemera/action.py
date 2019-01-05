@@ -54,7 +54,7 @@ def list(request):
     renderer='templates/actionlist.html')
 def project_actions(request):
     rows = Action.find_by_sql(
-        "project=:project AND status <> 'done' AND status <> 'recurring'",
+        "project=:project AND status <> 'recurring' ORDER BY status, id",
         project=request.matchdict['project'])
     return {
         'actions': [dict(x) for x in rows],

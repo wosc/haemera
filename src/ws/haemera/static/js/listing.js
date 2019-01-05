@@ -4,7 +4,8 @@ window.haemera = {};
 haemera.ListingController = {
     data: {
         'actions': [],
-        'current_row': null
+        'current_row': null,
+        'show_done': false,
     },
 
     update_url: null,
@@ -85,7 +86,7 @@ var ListingView = new Vue({
     el: '#listing',
     template: '#template-listing',
     data: {
-        'context': Controller.data,
+        'context': Controller.data
     },
     methods: {
         select_row: function(event) {
@@ -102,7 +103,7 @@ var DetailView = new Vue({
     el: '#detail',
     template: '#template-detail',
     data: {
-        'context': Controller.data,
+        'context': Controller.data
     },
     computed: {
         'action': function() {
@@ -111,6 +112,21 @@ var DetailView = new Vue({
     }
 });
 
+
+if (document.querySelector('#toggle-done-actions')) {
+var ToggleDoneButton = new Vue({
+    el: '#toggle-done-actions',
+    template: '#template-toggle-done-actions',
+    data: {
+        'context': Controller.data
+    },
+    methods: {
+        'toggle': function() {
+            this.context.show_done = ! this.context.show_done;
+        }
+    }
+});
+}
 
 var closest = function(el, tag) {
     tag = tag.toUpperCase();

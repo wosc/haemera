@@ -4,7 +4,7 @@
 {% block body %}
 <div class="container-fluid">
 
-<h3 class="topic-{{project.topic}}">{{project.subject}}</h3>
+<h3 class="topic-{{project.topic}}">{{project.subject}}
 
 <a class="btn btn-secondary"
    href="{{request.route_url('project', project=project.id,
@@ -18,13 +18,14 @@
 
 {% if project.id != 'root' %}
 <a href="{{request.route_url('project_edit', project=project.id)}}"
-   class="btn btn-raised btn-primary">Edit
+   class="btn btn-primary">Edit
 </a>
 {% else %}
 <a href="{{request.route_url('project_new')}}"
-   class="btn btn-raised btn-primary">New Project
+   class="btn btn-primary">New Project
 </a>
 {% endif %}
+</h3>
 
 {% for child in children %}
 <div>
@@ -42,7 +43,17 @@
 {% endif %}
 
 {% if project.id != 'root' %}
-{% if actions %}<h4>Actions</h4>{% endif %}
+{% if actions %}
+<h4>Actions
+  <span id="toggle-done-actions"></span>
+</h4>
+{% endif %}
+<script id="template-toggle-done-actions" type="x-template">
+<button class="btn btn-secondary" id="toggle-done-actions" v-on:click="toggle">
+  {{'{{'}}context.show_done ? 'Hide done' : 'Show done'{{'}}'}}
+</button>
+</script>
+
 {% include "templates/listing.html" %}
 {% endif %}
 

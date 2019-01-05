@@ -7,3 +7,8 @@ table.listing {
 #detail {
     margin-top: 2em;
 }
+
+
+.status-done {
+    text-decoration: line-through;
+}
