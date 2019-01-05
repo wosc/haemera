@@ -12,3 +12,14 @@ table.listing {
 .status-done {
     text-decoration: line-through;
 }
+
+
+@media (min-width: 576px) {
+.form-inline label {
+    margin-right: 0.5em;
+}
+
+.form-inline .form-control {
+    margin-right: 0.5em;
+}
+}
