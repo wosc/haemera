@@ -17,8 +17,9 @@ haemera.ListingController = {
     create: function() {
         this.data.actions.push({'subject': 'New Action', 'status': 'todo'});
         this.data.current_row = this.data.actions.length - 1;
-        // XXX must happen inside Vue rendering
-        // document.querySelector('#subject').focus();
+        Vue.nextTick(function() {
+            document.querySelector('#subject').select();
+        });
     },
 
     remove: function() {
