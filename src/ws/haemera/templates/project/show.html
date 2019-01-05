@@ -45,14 +45,18 @@
 {% if project.id != 'root' %}
 {% if actions %}
 <h4>Actions
-  <span id="toggle-done-actions"></span>
+<a class="btn btn-secondary"
+   href="{{request.route_url('project', project=project.id,
+         _query={'actdone': 'true'} if not request.params.get('actdone') else None)}}"
+        >
+  {% if request.params['actdone'] %}
+    Hide done
+  {% else %}
+    Show done
+  {% endif %}
+</a>
 </h4>
 {% endif %}
-<script id="template-toggle-done-actions" type="x-template">
-<button class="btn btn-secondary" id="toggle-done-actions" v-on:click="toggle">
-  {{'{{'}}context.show_done ? 'Hide done' : 'Show done'{{'}}'}}
-</button>
-</script>
 
 {% include "templates/listing.html" %}
 {% endif %}

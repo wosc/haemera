@@ -66,8 +66,10 @@ def list(request):
     route_name='project_actions',
     renderer='templates/actionlist.html')
 def project_actions(request):
+    done = " AND status <> 'done'" if not request.params.get('actdone') else ''
     rows = Action.find_by_sql(
-        "project=:project AND status <> 'recurring' ORDER BY status, id",
+        "project=:project AND status <> 'recurring'" + done +
+        " ORDER BY status, id",
         project=request.matchdict['project'])
     return {
         'actions': rows,

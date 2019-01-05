@@ -5,7 +5,6 @@
 <div id="listing" class="container-fluid">
 <table class="listing">
   <tr v-for="(action, i) in context.actions"
-      v-if="action.status != 'done' || context.show_done"
       :class="('topic-' + action.topic) + ' ' +
               ('status-' + action.status) + ' ' +
               (i == context.current_row ? 'table-active' : '')"
