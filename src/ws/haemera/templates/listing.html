@@ -107,4 +107,7 @@
 <script>
   haemera.ListingController.set({{actions | json | safe}});
   haemera.ListingController.update_url = "{{request.route_url('update')}}";
+{% if request.matchdict.get('query') == 'done' %}
+  haemera.ListingController.data.show_done = true;
+{% endif %}
 </script>
