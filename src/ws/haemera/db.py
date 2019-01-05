@@ -104,9 +104,10 @@ class DateTime(sqlalchemy.types.TypeDecorator):
         if not isinstance(value, pendulum.DateTime) or value.tzinfo is None:
             raise ValueError('datetime with timezone required, got %s' % value)
         value = value.in_tz('UTC')
-        # MySQL seems to store datetimes without any timezone information.
-        # Passing it a tz-aware datetime causes an error (1292, "Incorrect
-        # datetime value"), so we make it naive.
+        # MySQL stores datetimes without any timezone information. Its type
+        # conversion is based on exact classes, so pendulum instances fall
+        # through. Then their str() causes (1292, "Incorrect datetime value").
+        # Since it's somewhat cleaner, we fix it at sqlalchemy level instead.
         if dialect.name == 'mysql':
             value = value.replace(tzinfo=None)
         return value
