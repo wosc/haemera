@@ -23,9 +23,11 @@ haemera.ListingController = {
 
     remove: function() {
         if (this.data.current_row == null || ! this.data.actions) return;
-        this._deleted.push({
-            'id': this.data.actions[this.data.current_row].id,
-            'status': 'deleted'});
+        if (this.data.actions[this.data.current_row].id) {
+            this._deleted.push({
+                'id': this.data.actions[this.data.current_row].id,
+                'status': 'deleted'});
+        }
         this.data.actions.splice(this.data.current_row, 1);
         this.data.current_row = null;
     },
