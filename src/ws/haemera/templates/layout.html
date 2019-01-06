@@ -23,18 +23,23 @@
 <body>
 
 {# XXX I would like to use numbers, but they don't work in Chrome. #}
-{% set ACCESSKEYS = ['q', 'w', 'e', 'r', 't'] %}
+{% set ACCESSKEYS = {
+   'todo': 'q',
+   'work': 'w',
+   'waiting': 'e',
+   'scheduled': 'r'
+}%}
 
 <ul id="nav" class="nav nav-tabs bg-primary">
   {% for query in request.registry.settings.listing_queries %}
   <li class="nav-item">
     <a class="nav-link {{'active' if request.matchdict.get('query') == query else ''}}"
-       {% if loop.index0 < ACCESSKEYS | length %}accesskey="{{ACCESSKEYS[loop.index0]}}"{% endif %}
+       {% if ACCESSKEYS[query] %}accesskey="{{ACCESSKEYS[query]}}"{% endif %}
        href="{{request.route_url('action_list', query=query)}}">
       {{query | title}}</a>
   </li>
   {% endfor %}
-  <li class="nav-item {{'active' if request.matched_route.name == 'project' else ''}}"><a class="nav-link" href="{{request.route_url('project', project='root')}}">Projects</a></li>
+  <li class="nav-item {{'active' if request.matched_route.name == 'project' else ''}}"><a class="nav-link" accesskey="t" href="{{request.route_url('project', project='root')}}">Projects</a></li>
   {% if request.matched_route.name in ['action_list', 'project_actions', 'project'] %}
   <li class="nav-item"><a class="nav-link" href="#" onclick="haemera.ListingController.create(); return false;">Add</a></li>
   <li class="nav-item"><a class="nav-link" href="#" onclick="haemera.ListingController.remove(); return false;">Del</a></li>
