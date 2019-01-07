@@ -33,7 +33,8 @@ def export_ical(request):
 def to_ics(event, action):
     event.add('uid').value = 'id-%s' % action['id']
     event.add('summary').value = action['subject']
-    event.add('description').value = action['body']
+    if action['body']:
+        event.add('description').value = action['body']
     date = pendulum.parse(
         str(action['timestamp']) + ' ' + action['start_time'],
         tz='Europe/Berlin')
