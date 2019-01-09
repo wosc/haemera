@@ -1,5 +1,8 @@
+from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.decorator import reify
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from pyramid.security import Allow, Authenticated
 from pyramid.view import view_config
 import collections
 import jinja2
@@ -43,15 +46,22 @@ class Application(object):
 
         registry = pyramid.registry.Registry(
             bases=(zope.component.getGlobalSiteManager(),))
-        self.config = pyramid.config.Configurator(registry=registry)
-        self.config.setup_registry(settings=self.settings)
+        c = self.config = pyramid.config.Configurator(registry=registry)
+        c.setup_registry(settings=self.settings)
         # setup_registry() insists on copying the settings mapping into a new
         # `pyramid.config.settings.Settings` instance, sigh.
-        self.settings.update(self.config.registry.settings)
-        self.config.registry.settings = self.settings
+        self.settings.update(c.registry.settings)
+        c.registry.settings = self.settings
 
-        self.config.include('pyramid_tm')
+        c.include('pyramid_tm')
         self.configure_jinja()
+
+        if self.settings.get('auth.secret'):
+            c.set_authentication_policy(AuthTktAuthenticationPolicy(
+                self.settings['auth.secret'],
+                cookie_name='haemera_auth', max_age=30 * 24 * 3600))
+            c.set_authorization_policy(ACLAuthorizationPolicy())
+            c.set_root_factory(ACLRoot)
 
     def configure_jinja(self):
         c = self.config
@@ -78,6 +88,8 @@ class Application(object):
         c = self.config
 
         c.add_route('home', '/')
+        c.add_route('login', '/login')
+        c.add_route('logout', '/logout')
 
         c.add_route('action_list', '/list/{query}')
         c.add_route('ical', '/ical/{query}')
@@ -156,3 +168,38 @@ def topic_css(request):
     request.response.content_type = 'text/css'
     return '\n'.join('.topic-%s { color: #%s; }' % (key, value)
                      for key, value in conf.topics.items())
+
+
+class ACLRoot(object):
+
+    __acl__ = [(Allow, Authenticated, 'view',)]
+
+    def __init__(self, request):
+        pass
+
+
+@view_config(
+    route_name='login',
+    renderer='templates/login.html')
+def login(request):
+    if request.method == 'POST':
+        conf = zope.component.getUtility(ws.haemera.interfaces.ISettings)
+        if (request.POST.get('username') == conf['auth.username'] and
+                request.POST.get('password') == conf['auth.password']):
+            headers = pyramid.security.remember(
+                request, request.POST['username'])
+            raise HTTPFound(
+                request.route_url('action_list', query='todo'),
+                headers=headers)
+    return {}
+
+
+@view_config(context=HTTPForbidden)
+def forbidden(request):
+    return HTTPFound(request.route_url('login'))
+
+
+@view_config(route_name='logout')
+def logout(request):
+    headers = pyramid.security.forget(request)
+    raise HTTPFound(request.route_url('login'), headers=headers)

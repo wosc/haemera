@@ -33,6 +33,7 @@ class Project(ws.haemera.db.Object):
 
 @view_config(
     route_name='project',
+    permission='view',
     renderer='templates/project/show.html')
 def show(request):
     selected = request.matchdict['project']
@@ -56,6 +57,7 @@ def show(request):
 
 @view_config(
     route_name='project_edit',
+    permission='view',
     renderer='templates/project/edit.html')
 def edit(request):
     return {'context': Project.find_by_id(request.matchdict['project'])}
@@ -63,6 +65,7 @@ def edit(request):
 
 @view_config(
     route_name='project_new',
+    permission='view',
     renderer='templates/project/edit.html')
 def new(request):
     return {'context': {}}
@@ -73,6 +76,7 @@ def new(request):
     request_method='POST')
 @view_config(
     route_name='project_new',
+    permission='view',
     request_method='POST')
 def store(request):
     id = request.matchdict.get('project')

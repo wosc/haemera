@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="shortcut icon" href="{{request.route_url('home')}}static/calendar-flat.png">
+
+  <title>Login - Haemera</title>
+
+  {% for name in [
+        'bootstrap-material-design-4.1.1.min',
+        'roboto',
+        'material-icons',
+        'style',
+        ] %}
+    <link rel="stylesheet" href="{{request.route_url('home')}}static/css/{{name}}.css">
+  {% endfor %}
+</head>
+<body>
+
+<div class="container">
+
+<div style="margin-top: 3em">
+
+<h3>Login</h3>
+
+<form method="POST">
+
+<div class="form-group">
+  <label for="username">Username</label>
+  <input type="text" class="form-control" id="username" name="username" value="{{username}}" autofocus/>
+</div>
+<div class="form-group">
+  <label for="password">Password</label>
+  <input type="password" class="form-control" id="password" name="password" />
+</div>
+
+<div class="form-group">
+  <button type="submit" class="btn btn-raised btn-primary">Login</button>
+</div>
+
+</form>
+</div>
+
+</div>
+
+</body>

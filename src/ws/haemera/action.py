@@ -39,6 +39,7 @@ class Action(ws.haemera.db.Object):
 
 @view_config(
     route_name='action_list',
+    permission='view',
     renderer='templates/actionlist.html')
 def list(request):
     conf = zope.component.getUtility(ws.haemera.interfaces.ISettings)
@@ -69,6 +70,7 @@ def list(request):
 
 @view_config(
     route_name='project_actions',
+    permission='view',
     renderer='templates/actionlist.html')
 def project_actions(request):
     done = " AND status <> 'done'" if not request.params.get('actdone') else ''
@@ -85,6 +87,7 @@ def project_actions(request):
 @view_config(
     route_name='update',
     request_method='POST',
+    permission='view',
     renderer='json')
 def update(request):
     db = zope.component.getUtility(ws.haemera.interfaces.IDatabase).session
