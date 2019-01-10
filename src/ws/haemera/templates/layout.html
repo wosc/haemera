@@ -40,11 +40,6 @@
   </li>
   {% endfor %}
   <li class="nav-item"><a class="nav-link {{'active' if request.matched_route.name == 'project' else ''}}" accesskey="t" href="{{request.route_url('project', project='root')}}">Projects</a></li>
-  {% if request.matched_route.name in ['action_list', 'project_actions', 'project'] %}
-  <li class="nav-item"><a class="nav-link" href="#" onclick="haemera.ListingController.create(); return false;">Add</a></li>
-  <li class="nav-item"><a class="nav-link" href="#" onclick="haemera.ListingController.remove(); return false;">Del</a></li>
-  <li class="nav-item"><a class="nav-link" href="#" onclick="haemera.ListingController.persist(); return false;">Save</a></li>
-  {% endif %}
 </ul>
 
 {% block body %}

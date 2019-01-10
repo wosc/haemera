@@ -22,4 +22,8 @@ table.listing {
 .form-inline .form-control {
     margin-right: 0.5em;
 }
+
+#mobile-actions {
+    display: none;
+}
 }

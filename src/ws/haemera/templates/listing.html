@@ -13,6 +13,13 @@
 {% endif %}
 
 <div id="listing"></div>
+
+<div id="mobile-actions" class="container-fluid">
+  <a class="btn btn-secondary" href="#" onclick="haemera.ListingController.create(); return false;">Add</a>
+  <a class="btn btn-danger" href="#" onclick="haemera.ListingController.remove(); return false;">Del</a>
+  <a class="btn btn-primary" href="#" onclick="haemera.ListingController.persist(); return false;">Save</a>
+</div>
+
 <div id="detail"></div>
 
 <script id="template-listing" type="x-template">
