@@ -125,7 +125,9 @@ var closest = function(el, tag) {
 
 
 document.querySelector('body').addEventListener('keyup', function(event) {
-    if (event.target.tagName == 'INPUT' || event.target.tagName == 'TEXTAREA') {
+    if (event.target.tagName == 'INPUT' ||
+        event.target.tagName == 'SELECT' ||
+        event.target.tagName == 'TEXTAREA') {
         return;
     }
 
