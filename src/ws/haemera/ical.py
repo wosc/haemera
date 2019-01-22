@@ -38,7 +38,7 @@ def to_ics(event, action):
     date = pendulum.parse(
         str(action['timestamp']) + ' ' + action['start_time'],
         tz='Europe/Berlin')
-    duration = pendulum.parse(action['duration'])
+    duration = pendulum.parse(action['duration'] or '01:00')
     event.add('dtstart').value = date
     event.add('dtend').value = date.add(
         hours=duration.hour, minutes=duration.minute)
