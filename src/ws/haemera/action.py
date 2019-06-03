@@ -55,10 +55,13 @@ def list(request):
         result = []
         for row in rows:
             row = dict(row)
-            display_timestamp = row['timestamp'].strftime('%a, %d.%m.%Y')
-            if row['start_time']:
-                display_timestamp += ' ' + row['start_time']
-            row['display_timestamp'] = display_timestamp
+            if not row['timestamp']:  # Probably a user mistake
+                row['display_timestamp'] = ''
+            else:
+                display_timestamp = row['timestamp'].strftime('%a, %d.%m.%Y')
+                if row['start_time']:
+                    display_timestamp += ' ' + row['start_time']
+                row['display_timestamp'] = display_timestamp
             result.append(row)
         rows = result
 

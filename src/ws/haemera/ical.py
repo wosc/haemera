@@ -25,6 +25,8 @@ def export_ical(request):
 
     cal = vobject.iCalendar()
     for row in Action.find_by_sql(query):
+        if not row['timestamp']:  # Probably a user mistake
+            continue
         event = cal.add('vevent')
         to_ics(event, row)
     return cal.serialize()
