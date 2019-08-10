@@ -111,6 +111,27 @@ var DetailView = new Vue({
         'action': function() {
             return this.context.actions[this.context.current_row];
         }
+    },
+    watch: {
+        'action.status': function(value, previous) {
+            if (value != 'scheduled') {
+                return;
+            }
+            if (! this.action.timestamp) {
+                // https://stackoverflow.com/a/4929629/1885340
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0');
+                var yyyy = today.getFullYear();
+                this.action.timestamp = yyyy + '-' + mm + '-' + dd;
+            }
+            if (! this.action.start_time) {
+                this.action.start_time = '08:00';
+            }
+            if (! this.action.duration) {
+                this.action.duration = '01:00';
+            }
+        }
     }
 });
 
