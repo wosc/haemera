@@ -17,10 +17,8 @@ class Database(object):
     def __init__(self, dsn, testing=False):
         self.engine = sqlalchemy.create_engine(dsn)
         self.session_factory = sqlalchemy.orm.scoped_session(
-            sqlalchemy.orm.sessionmaker(
-                bind=self.engine,
-                extension=zope.sqlalchemy.ZopeTransactionExtension(
-                    keep_session=testing)))
+            sqlalchemy.orm.sessionmaker(bind=self.engine))
+        zope.sqlalchemy.register(self.session_factory, keep_session=testing)
 
     def initialize_database(self):
         from .action import Action

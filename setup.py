@@ -20,7 +20,7 @@ setup(
         'vobject',
         'zope.component',
         'zope.interface',
-        'zope.sqlalchemy',
+        'zope.sqlalchemy>=1.2.0.dev0',
     ],
 
     extras_require={'test': [
