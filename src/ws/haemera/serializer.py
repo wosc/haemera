@@ -31,14 +31,14 @@ class DictWrapper(dict):
             self['1'] = True
         # The only part of the dict API that json.JSONEncoder is _actually_
         # interested in.
-        self.items = context.items
+        self.items = context._mapping.items
 
 
 ENCODERS = {
     datetime.date: datetime_encode,
     datetime.datetime: datetime_encode,
     decimal.Decimal: decimal_encode,
-    sqlalchemy.engine.RowProxy: DictWrapper,
+    sqlalchemy.engine.Row: DictWrapper,
 }
 
 

@@ -15,7 +15,7 @@ setup(
         'pyramid_tm',
         'python-dateutil',
         'setuptools',
-        'sqlalchemy',
+        'sqlalchemy>=1.4.0.dev0',
         'transaction',
         'vobject',
         'zope.component',
