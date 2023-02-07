@@ -23,7 +23,7 @@ class Project(ws.haemera.db.Object):
     def all(cls):
         result = []
         for project in cls.find_by_sql("status = 'todo' ORDER BY subject"):
-            project = dict(project)
+            project = dict(project._mapping)
             parts = project['subject'].split('|')
             prefix = '&raquo;  ' * (len(parts) - 1)
             project['subject'] = prefix + parts[-1]

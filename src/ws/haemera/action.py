@@ -54,7 +54,7 @@ def list(request):
     if request.matchdict.get('query') in ['waiting', 'scheduled']:
         result = []
         for row in rows:
-            row = dict(row)
+            row = dict(row._mapping)
             if not row['timestamp']:  # Probably a user mistake
                 row['display_timestamp'] = ''
             else:
