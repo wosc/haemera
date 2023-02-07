@@ -1,8 +1,7 @@
 from pyramid.authentication import AuthTktAuthenticationPolicy
-from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy, Allow, Authenticated
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
-from pyramid.security import Allow, Authenticated
 from pyramid.view import view_config
 import collections
 import jinja2

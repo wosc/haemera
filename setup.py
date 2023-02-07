@@ -10,7 +10,7 @@ setup(
 
     install_requires=[
         'pendulum',
-        'pyramid',
+        'pyramid>=2.0.0.dev0',
         'pyramid_jinja2',
         'pyramid_tm',
         'python-dateutil',
