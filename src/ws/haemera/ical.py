@@ -25,6 +25,7 @@ def export_ical(request):
 
     cal = vobject.iCalendar()
     for row in Action.find_by_sql(query):
+        row = dict(row._mapping)
         # Probably a user mistake
         if not (row['timestamp'] and row['start_time']):
             continue

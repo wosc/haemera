@@ -46,7 +46,7 @@ def show(request):
         project = Project.find_by_sql('id=:id', id=selected)[0]
         children = Project.find_by_sql(
             'subject like :p ' + done + ' ORDER BY subject',
-            p='%s|%%' % project['subject'])
+            p='%s|%%' % project._mapping['subject'])
     result = {
         'project': project,
         'children': children,
