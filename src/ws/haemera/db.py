@@ -98,7 +98,7 @@ class DateTime(sqlalchemy.types.TypeDecorator):
         if value is None:
             return None
         if not isinstance(value, pendulum.DateTime) or value.tzinfo is None:
-            raise ValueError('datetime with timezone required, got %s' % value)
+            raise ValueError('datetime with timezone required, got %r' % value)
         value = value.in_tz('UTC')
         # MySQL stores datetimes without any timezone information. Its type
         # conversion is based on exact classes, so pendulum instances fall
