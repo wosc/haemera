@@ -99,6 +99,8 @@ def update(request):
         # XXX Use a proper schema?
         if action.get('timestamp'):
             action['timestamp'] = pendulum.parse(action['timestamp']).date()
+        if action.get('done_at'):
+            action['done_at'] = pendulum.parse(action['done_at'])
         for key, value in action.items():
             # XXX I think this is actually a vue shortcoming
             if value == '':
