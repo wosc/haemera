@@ -9,7 +9,6 @@ dependencies = [
     "pyramid_jinja2",
     "pyramid_tm",
     "python-dateutil",
-    "setuptools",
     "sqlalchemy>=2.0.0.dev0",
     "transaction",
     "vobject",

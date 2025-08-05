@@ -4,10 +4,10 @@ from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.view import view_config
 import collections
+import importlib.metadata
 import jinja2
 import json
 import os.path
-import pkg_resources
 import pyramid.config
 import pyramid.paster
 import pyramid.registry
@@ -35,8 +35,8 @@ class Application(object):
     def configure_pyramid(self, settings):
         self.settings = Settings()
         self.settings.update(settings)
-        self.settings['version'] = pkg_resources.get_distribution(
-            'ws.haemera').version
+        self.settings['version'] = importlib.metadata.version(
+            'ws.haemera')
         zope.component.provideUtility(
             self.settings, ws.haemera.interfaces.ISettings)
 
