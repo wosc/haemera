@@ -1,0 +1,41 @@
+[project]
+name = "ws.haemera"
+description = "Personal Todo List web application"
+version = "1.0.0.dev0"
+
+dependencies = [
+    "pendulum",
+    "pyramid>=2.0.0.dev0",
+    "pyramid_jinja2",
+    "pyramid_tm",
+    "python-dateutil",
+    "setuptools",
+    "sqlalchemy>=2.0.0.dev0",
+    "transaction",
+    "vobject",
+    "zope.component",
+    "zope.interface",
+    "zope.sqlalchemy>=1.2.0.dev0",
+]
+optional-dependencies = {test=[
+  "pytest",
+]}
+
+authors = [{name="Wolfgang Schnerring", email="wosc@wosc.de"}]
+license = {text=" BSD-3-Clause"}
+urls = {Repository="https://github.com/wosc/haemera"}
+requires-python = ">=3.7"
+
+[project.scripts]
+haemera-init-db = "ws.haemera.application:initialize_database"
+haemera-recurrences = "ws.haemera.ical:instantiate_recurring"
+
+[project.entry-points."paste.app_factory"]
+main = "ws.haemera.application:app_factory"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ws"]
